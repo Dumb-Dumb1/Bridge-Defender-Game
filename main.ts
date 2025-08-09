@@ -44,13 +44,14 @@ let bossSpawnNum = settings.readNumber("bossSpawnNum") || 120
 
 let carHealth = settings.readNumber("carHealth") || 150
 let carSpeed = settings.readNumber("carSpeed") || -20
-let carProjectileInterval = settings.readNumber("carProjectileInterval") || 500                //will break if set too low
+let carAttackInterval = settings.readNumber("carAttackInterval") || 500                //will break if set too low
 let carProjectileSpeed = settings.readNumber("carProjectileSpeed") || 100
 let carStunDuration = settings.readNumber("carStunDuration") || 1300
 let carDodge = settings.readNumber("carDodge") || 90                                           //percent
 
 let ghostHealth = settings.readNumber("ghostHealth") || 100
 let ghostSpeed = settings.readNumber("ghostSpeed") || -20
+let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 200
 
 
 //variables(Don't change)
@@ -407,7 +408,7 @@ function settingsCarMenuCreate() {
         `Spawn Car Every: ${bossSpawnNum}`,
         `Car Health: ${carHealth}`,
         `Car Speed: ${carSpeed}`,
-        `Car Fire Rate: ${carProjectileInterval}ms`,
+        `Car Fire Rate: ${carAttackInterval}ms`,
         `Car Bullet Speed: ${carProjectileSpeed}`,
         `Car Stun: ${carStunDuration}ms`,
         `Car Dodge: ${carDodge}%`,
@@ -428,8 +429,8 @@ function settingsCarMenuCreate() {
             carSpeed = game.askForNumber("Speed", 3)
             settings.writeNumber("carSpeed", carSpeed)
         } else if (selectedIndex == 3) {
-            carProjectileInterval = game.askForNumber("Car Fire Rate", 4)
-            settings.writeNumber("carProjectileInterval", carProjectileInterval)
+            carAttackInterval = game.askForNumber("Car Fire Rate", 4)
+            settings.writeNumber("carAttackInterval", carAttackInterval)
         } else if (selectedIndex == 4) {
             carProjectileSpeed = game.askForNumber("Bullet Speed", 3)
             settings.writeNumber("carProjectileSpeed", carProjectileSpeed)
@@ -993,9 +994,11 @@ function startGame() {
     }
 
     //car attacks
-    game.onUpdateInterval(carProjectileInterval, function () {
+    game.onUpdateInterval(carAttackInterval, function () {
         for (let b of bosses) {
-            b.attack1()
+            if (b.type == BossType.car) {
+                b.attack1()
+            }
         }
     })
 
@@ -1031,7 +1034,6 @@ function startGame() {
             }
         }
     })
-
     //main attack overlaps car projectile
     sprites.onOverlap(SpriteKind.Projectile, SpriteKind.CarProjectile, function (sprite: Sprite, otherSprite: Sprite) {
         sprites.destroy(sprite)
@@ -1054,10 +1056,19 @@ function startGame() {
         }
 
         attack1() {
-            this.sprite.vy += 5
-            
+            let e = new enemy1(this.sprite.x - 20, this.sprite.y)
+            enemies.push(e)
         }
     }
+
+    //ghost attacks
+    game.onUpdateInterval(ghostAttackInterval, function () {
+        for (let b of bosses) {
+            if (b.type == BossType.ghost) {
+                b.attack1()
+            }
+        }
+    })
 
 
 

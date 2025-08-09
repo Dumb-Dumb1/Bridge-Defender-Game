@@ -8,7 +8,8 @@
         "encryption extension": "github:Dumb-Dumb1/arcade-encryption#v4.2.1",
         "arcade-screen-transitions": "github:riknoll/arcade-screen-transitions#v0.1.0",
         "arcade-text": "github:microsoft/arcade-text#v1.3.0",
-        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.0.1"
+        "arcade-mini-menu": "github:riknoll/arcade-mini-menu#v0.0.1",
+        "pxt-countup": "github:shakao/pxt-countup#v0.0.2"
     },
     "files": [
         "main.ts",
