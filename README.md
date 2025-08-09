@@ -3,14 +3,10 @@
 
 > Open this page at [https://dumb-dumb1.github.io/bridge-defender-game/](https://dumb-dumb1.github.io/bridge-defender-game/)
 
-## Use as Extension
+## Play the game
 
-This repository can be added as an **extension** in MakeCode.
+* [https://arcade.makecode.com/S12328-49292-23970-50633]
 
-* open [https://arcade.makecode.com/](https://arcade.makecode.com/)
-* click on **New Project**
-* click on **Extensions** under the gearwheel menu
-* search for **https://github.com/dumb-dumb1/bridge-defender-game** and import
 
 ## Edit this project
 
