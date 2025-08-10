@@ -1100,8 +1100,8 @@ function startGame() {
             let x = [-20,0,20]
             let y = [0,-20,20]
             for (let i = 0; i < 3; i++) {
-                let ex = this.sprite.x + x[i-1]
-                let ey = this.sprite.y + y[i-1]
+                let ex = this.sprite.x + x[i]
+                let ey = this.sprite.y + y[i]
                 if (ey < minY) {
                     ey = minY
                 } else if (ey > screen.height - 10) {
