@@ -386,7 +386,7 @@ function settingsEnemiesMenuCreate() {
 function settingsBossMenuCreate() {
     let settingsBoss = [
         `Car`,
-        `Nothing Yet`
+        `Ghost`
     ]
 
     let settingsBossMenu = miniMenu.createMenuFromArray(convertArrayToMenuItems(settingsBoss))
@@ -396,6 +396,8 @@ function settingsBossMenuCreate() {
     settingsBossMenu.onButtonPressed(controller.A, function(selection: string, selectedIndex: number) {
         if (selection == `Car`) {
             settingsCarMenuCreate()
+        } else if (selection == `Ghost`) {
+            settingsGhostMenuCreate()
         }
 
         sprites.destroy(settingsBossMenu)
@@ -405,7 +407,7 @@ function settingsBossMenuCreate() {
 //Car settings menu
 function settingsCarMenuCreate() {
     let settingsCar = [
-        `Spawn Car Every: ${bossSpawnNum}`,
+        `Spawn Boss Every: ${bossSpawnNum}`,
         `Car Health: ${carHealth}`,
         `Car Speed: ${carSpeed}`,
         `Car Fire Rate: ${carAttackInterval}ms`,
@@ -420,7 +422,7 @@ function settingsCarMenuCreate() {
 
     settingsCarMenu.onButtonPressed(controller.A, function (selection: string, selectedIndex: number) {
         if (selectedIndex == 0) {
-            bossSpawnNum = game.askForNumber("Spawn Count", 3)
+            bossSpawnNum = game.askForNumber("Spawn num", 3)
             settings.writeNumber("bossSpawnNum", bossSpawnNum)
         } else if (selectedIndex == 1) {
             carHealth = game.askForNumber("Health", 3)
@@ -446,6 +448,41 @@ function settingsCarMenuCreate() {
         settingsCarMenuCreate()
     })
 }
+
+//Ghost settings menu
+function settingsGhostMenuCreate() {
+    let settingsGhost = [
+        `Spawn Boss Every: ${bossSpawnNum}`,
+        `Ghost Health: ${ghostHealth}`,
+        `Ghost Speed: ${ghostSpeed}`,
+        `Ghost Fire Rate: ${ghostAttackInterval}ms`,
+    ]
+
+    let settingsGhostMenu = miniMenu.createMenuFromArray(convertArrayToMenuItems(settingsGhost))
+    returnToCategoriesB(settingsGhostMenu)
+    menuSelectionChangedSound(settingsGhostMenu)
+
+    settingsGhostMenu.onButtonPressed(controller.A, function (selection: string, selectedIndex: number) {
+        if (selectedIndex == 0) {
+            bossSpawnNum = game.askForNumber("Spawn num", 3)
+            settings.writeNumber("bossSpawnNum", bossSpawnNum)
+        } else if (selectedIndex == 1) {
+            ghostHealth = game.askForNumber("Health", 3)
+            settings.writeNumber("ghostHealth", ghostHealth)
+        } else if (selectedIndex == 2) {
+            ghostSpeed = game.askForNumber("Speed", 3)
+            settings.writeNumber("ghostSpeed", ghostSpeed)
+        } else if (selectedIndex == 3) {
+            ghostAttackInterval = game.askForNumber("Ghost Fire Rate", 4)
+            settings.writeNumber("ghostAttackInterval", ghostAttackInterval)
+        }
+
+        sprites.destroy(settingsGhostMenu)
+        settingsGhostMenuCreate()
+    })
+}
+
+
 //end of menus
 
 
