@@ -897,8 +897,8 @@ function startGame() {
         onDestroyed(): void {
             return
         }
-        attack1():void {
-            return
+        attack1(): enemy {
+            return null
         }
     }
 
@@ -977,7 +977,7 @@ function startGame() {
             }
         }
 
-        attack1() {
+        attack1(): enemy {
             //if car sprite exsists and player is not already stunned create target sprite at current player position and shoots enemy projectile at target
             if (this.sprite != null && playerStunned == false) {
 
@@ -988,8 +988,9 @@ function startGame() {
                 let enemyProjectile = sprites.createProjectileFromSprite(assets.image`enemyProjectile`, this.sprite, 1, 1)
                 enemyProjectile.setKind(SpriteKind.CarProjectile)
                 enemyProjectile.follow(target, carProjectileSpeed)
-                
+
             }
+            return null
         }
     }
 
@@ -1055,9 +1056,8 @@ function startGame() {
             }
         }
 
-        attack1() {
-            let e = new enemy1(this.sprite.x - 20, this.sprite.y)
-            enemies.push(e)
+        attack1(): enemy {
+            return new enemy1(this.sprite.x - 20, this.sprite.y)
         }
     }
 
@@ -1065,7 +1065,10 @@ function startGame() {
     game.onUpdateInterval(ghostAttackInterval, function () {
         for (let b of bosses) {
             if (b.type == BossType.ghost) {
-                b.attack1()
+                let e = b.attack1()
+                if (e) {
+                    enemies.push(e)
+                }
             }
         }
     })
