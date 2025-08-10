@@ -30,7 +30,7 @@ let megaAttackTimesFired = settings.readNumber("megaAttackTimesFired") || 3     
 let megaAttackSpeed = settings.readNumber("megaAttackSpeed") || 100                            //Will break if set to 30 or below; default 100
 let megaAttackTimeBetweenBursts = settings.readNumber("megaAttackTimeBetweenBursts") || 500    //milliseconds; default 500
 let megaAttackEffect = settings.readNumber("megaAttackEffect") || 8                            //mega attack's effect on enemy1 (how fast enemies run away)
-let megaAttackDamageDealtToCar = settings.readNumber("megaAttackDamageDealtToCar") || 3
+let megaAttackDamageDealtToBoss = settings.readNumber("megaAttackDamageDealtToBoss") || 3
 let megaAttackLifeSpan = settings.readNumber("megaAttackLifeSpan") || 2000                     //Life spawn of projectiles; Set to 2000 for it to make it across the entire screen
 
 let enemy1Freq = settings.readNumber("enemy1Freq") || 500                                      //lower = more (Time between spawn in ms)
@@ -40,7 +40,7 @@ let enemy2Freq = settings.readNumber("enemy2Freq") || 5000
 let enemy2Speed = settings.readNumber("enemy2Speed") || -90
 let enemy2Split = settings.readNumber("enemy2Split") || 50                                     //percent chance to split when destroyed
 
-let bossSpawnNum = settings.readNumber("bossSpawnNum") || 120
+let bossSpawnNum = settings.readNumber("bossSpawnNum") || 100
 
 let carHealth = settings.readNumber("carHealth") || 150
 let carSpeed = settings.readNumber("carSpeed") || -20
@@ -50,8 +50,8 @@ let carStunDuration = settings.readNumber("carStunDuration") || 1300
 let carDodge = settings.readNumber("carDodge") || 90                                           //percent
 
 let ghostHealth = settings.readNumber("ghostHealth") || 100
-let ghostSpeed = settings.readNumber("ghostSpeed") || -20
-let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 200
+let ghostSpeed = settings.readNumber("ghostSpeed") || -50
+let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 500
 
 
 //variables(Don't change)
@@ -304,7 +304,7 @@ function settingsMegaMenuCreate() {
         `Speed: ${megaAttackSpeed}`,
         `Time Between Bursts: ${megaAttackTimeBetweenBursts}ms`,
         `Effect on Enemies: ${megaAttackEffect}`,
-        `Damage to Car: ${megaAttackDamageDealtToCar}`,
+        `Damage to Car: ${megaAttackDamageDealtToBoss}`,
         `Lifespan: ${megaAttackLifeSpan}ms`
     ]
 
@@ -329,8 +329,8 @@ function settingsMegaMenuCreate() {
             megaAttackEffect = game.askForNumber("Effect", 2)
             settings.writeNumber("megaAttackEffect", megaAttackEffect)
         } else if (selectedIndex == 5) {
-            megaAttackDamageDealtToCar = game.askForNumber("Damage to Car", 2)
-            settings.writeNumber("megaAttackDamageDealtToCar", megaAttackDamageDealtToCar)
+            megaAttackDamageDealtToBoss = game.askForNumber("Damage to Boss", 2)
+            settings.writeNumber("megaAttackDamageDealtToBoss", megaAttackDamageDealtToBoss)
         } else if (selectedIndex == 6) {
             megaAttackLifeSpan = game.askForNumber("Lifespan", 4)
             settings.writeNumber("megaAttackLifeSpan", megaAttackLifeSpan)
@@ -916,7 +916,7 @@ function startGame() {
 
         damageSuper() {
             //damage the car
-            this.health -= megaAttackDamageDealtToCar
+            this.health -= megaAttackDamageDealtToBoss
             this.healthBar.value = this.health
 
             //slows the car if it is not already slowed
@@ -1090,14 +1090,18 @@ function startGame() {
             //damage the player
             if (this.sprite.x <= 0) {
                 info.player1.changeLifeBy(-100)
+            } else {
+                this.sprite = null
             }
         }
 
         attack1(): enemy[] {
             let spawned: enemy[] = []
+            let x = [-20,0,20]
+            let y = [0,-20,20]
             for (let i = 0; i < 3; i++) {
-                let ex = this.sprite.x + randint(-20, 20)
-                let ey = this.sprite.y + randint(-20, 20)
+                let ex = this.sprite.x + x[i-1]
+                let ey = this.sprite.y + y[i-1]
                 if (ey < minY) {
                     ey = minY
                 } else if (ey > screen.height - 10) {
