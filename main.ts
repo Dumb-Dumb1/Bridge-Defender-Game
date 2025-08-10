@@ -67,6 +67,7 @@ let megaAttackCooldown = 0
 let enemy1Count = 0
 let bossSpawned = false
 let playerStunned = false
+let laserCooldownTimer = 0
 
 
 //scene
@@ -597,7 +598,7 @@ function startGame() {
     //main attack
     //laser shoot
     forever(function () {
-        if (controller.A.isPressed() && info.countdown() == 0 && controller.up.isPressed() == false && controller.down.isPressed() == false) {
+        if (controller.A.isPressed() && game.runtime() >= laserCooldownTimer && controller.up.isPressed() == false && controller.down.isPressed() == false) {
             let laser = sprites.createProjectileFromSprite(assets.image`laser`, player, laserSpeed, 0)
             laser.x += 8
             laser.y += 4
@@ -608,17 +609,15 @@ function startGame() {
 
     //start laser cooldown when up or down button is released
     controller.up.onEvent(ControllerButtonEvent.Released, function () {
-        if (info.countdown() == 0) {
-            info.startCountdown(laserCooldown)
+        if (game.runtime() >= laserCooldownTimer) {
+            laserCooldownTimer = game.runtime() + laserCooldown * 1000
         }
     })
     controller.down.onEvent(ControllerButtonEvent.Released, function () {
-        if (info.countdown() == 0) {
-            info.startCountdown(laserCooldown)
+        if (game.runtime() >= laserCooldownTimer) {
+            laserCooldownTimer = game.runtime() + laserCooldown * 1000
         }
     })
-    //prevent game end after countdown
-    info.onCountdownEnd(function () { })
 
     //player animation start
     controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
