@@ -934,8 +934,8 @@ function startGame() {
         onDestroyed(): void {
             return
         }
-        attack1(): enemy {
-            return null
+        attack1(): enemy[] {
+            return []
         }
     }
 
@@ -1014,7 +1014,7 @@ function startGame() {
             }
         }
 
-        attack1(): enemy {
+        attack1(): enemy[] {
             //if car sprite exsists and player is not already stunned create target sprite at current player position and shoots enemy projectile at target
             if (this.sprite != null && playerStunned == false) {
 
@@ -1027,7 +1027,7 @@ function startGame() {
                 enemyProjectile.follow(target, carProjectileSpeed)
 
             }
-            return null
+            return []
         }
     }
 
@@ -1093,8 +1093,20 @@ function startGame() {
             }
         }
 
-        attack1(): enemy {
-            return new enemy1(this.sprite.x - 50, this.sprite.y)
+        attack1(): enemy[] {
+            let spawned: enemy[] = []
+            for (let i = 0; i < 3; i++) {
+                let ex = this.sprite.x + randint(-20, 20)
+                let ey = this.sprite.y + randint(-20, 20)
+                if (ey < minY) {
+                    ey = minY
+                } else if (ey > screen.height - 10) {
+                    ey = screen.height - 10
+                }
+                let e = new enemy1(ex, ey)
+                spawned.push(e)
+            }
+            return spawned
         }
     }
 
@@ -1102,8 +1114,8 @@ function startGame() {
     game.onUpdateInterval(ghostAttackInterval, function () {
         for (let b of bosses) {
             if (b.type == BossType.ghost) {
-                let e = b.attack1()
-                if (e) {
+                let spawned = b.attack1()
+                for (let e of spawned) {
                     enemies.push(e)
                 }
             }
