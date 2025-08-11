@@ -1125,7 +1125,7 @@ function startGame() {
         }
     })
 
-
+    
     //game end
     info.onLifeZero(function () {
         music.stopAllSounds()
