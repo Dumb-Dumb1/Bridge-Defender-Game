@@ -1106,7 +1106,7 @@ function startGame() {
                 } else if (ey > screen.height - 10) {
                     ey = screen.height - 10
                 }
-                let e = new enemy1(ex, ey)
+                let e = new enemy1(ex, ey, true)
                 spawned.push(e)
             }
             return spawned
