@@ -916,6 +916,11 @@ function startGame() {
             //damage the car
             this.health -= 5
             this.healthBar.value = this.health
+            //unhide if invisible
+            if (this.sprite.flags & sprites.Flag.Invisible) {
+                this.sprite.setFlag(SpriteFlag.Invisible, false)
+                this.healthBar.setFlag(SpriteFlag.Invisible, false)
+            }
 
             //destroy the car if health is less than 0
             if (this.health <= 0) {
@@ -935,6 +940,12 @@ function startGame() {
         }
 
         damageSuper() {
+            //unhide if invisible
+            if (this.sprite.flags & sprites.Flag.Invisible) {
+                this.sprite.setFlag(SpriteFlag.Invisible, false)
+                this.healthBar.setFlag(SpriteFlag.Invisible, false)
+            }
+
             //damage the car
             this.health -= megaAttackDamageDealtToBoss
             this.healthBar.value = this.health
@@ -966,7 +977,7 @@ function startGame() {
     forever(function () {
         //spawns boss if enemy1 count divided by x has no remainder, enemy1 count is not zero, and no other car has already been spawned
         if (enemy1Count % bossSpawnNum == 0 && enemy1Count != 0 && bossSpawned == false && bossSpawn == true) {
-            if (Math.percentChance(0)) {
+            if (Math.percentChance(50)) {
                 let b = new car()
                 bosses.push(b)
             } else {
@@ -1148,6 +1159,7 @@ function startGame() {
                 this.sprite.setFlag(SpriteFlag.Invisible, false)
                 this.healthBar.setFlag(SpriteFlag.Invisible, false)
             } else {
+                this.sprite.y = randint(minY, screen.height - 10)
                 this.sprite.setFlag(SpriteFlag.Invisible, true)
                 this.healthBar.setFlag(SpriteFlag.Invisible, true)
             }
