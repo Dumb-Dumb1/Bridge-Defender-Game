@@ -29,7 +29,7 @@ let megaAttackCooldownS = settings.readNumber("megaAttackCooldownS") || 8       
 let megaAttackTimesFired = settings.readNumber("megaAttackTimesFired") || 3                    //default 3
 let megaAttackSpeed = settings.readNumber("megaAttackSpeed") || 100                            //Will break if set to 30 or below; default 100
 let megaAttackTimeBetweenBursts = settings.readNumber("megaAttackTimeBetweenBursts") || 500    //milliseconds; default 500
-let megaAttackEffect = settings.readNumber("megaAttackEffect") || 8                            //mega attack's effect on enemy1 (how fast enemies run away)
+let megaAttackEffect = settings.readNumber("megaAttackEffect") || 16                            //mega attack's effect on enemy1 (how fast enemies run away)
 let megaAttackDamageDealtToBoss = settings.readNumber("megaAttackDamageDealtToBoss") || 3
 let megaAttackLifeSpan = settings.readNumber("megaAttackLifeSpan") || 2000                     //Life spawn of projectiles; Set to 2000 for it to make it across the entire screen
 
@@ -41,17 +41,18 @@ let enemy2Speed = settings.readNumber("enemy2Speed") || -90
 let enemy2Split = settings.readNumber("enemy2Split") || 50                                     //percent chance to split when destroyed
 
 let bossSpawnNum = settings.readNumber("bossSpawnNum") || 100
+let bossDodge = settings.readNumber("bossDodge") || 90                                           //percent
 
 let carHealth = settings.readNumber("carHealth") || 150
 let carSpeed = settings.readNumber("carSpeed") || -20
 let carAttackInterval = settings.readNumber("carAttackInterval") || 500                //will break if set too low
 let carProjectileSpeed = settings.readNumber("carProjectileSpeed") || 100
 let carStunDuration = settings.readNumber("carStunDuration") || 1300
-let carDodge = settings.readNumber("carDodge") || 90                                           //percent
 
-let ghostHealth = settings.readNumber("ghostHealth") || 100
-let ghostSpeed = settings.readNumber("ghostSpeed") || -50
-let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 500
+let ghostHealth = settings.readNumber("ghostHealth") || 80
+let ghostSpeed = settings.readNumber("ghostSpeed") || -30
+let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 1250
+let ghostAttack2Interval = settings.readNumber("ghostAttack2Interval") || 3000
 
 
 //variables(Don't change)
@@ -99,7 +100,7 @@ function instructions() {
         "- Car (Boss): -100 health, spawns every " + bossSpawnNum + " Green Snakes\n" +
         "  Shoots stun projectiles. When stunned, you can't move\n" +
         "  or shoot lasers, but you can still use Mega Attack\n" +
-        "  Dodges lasers " + carDodge + "% of the time",
+        "  Dodges lasers " + bossDodge + "% of the time",
         DialogLayout.Full
     )
     game.showLongText(
@@ -161,7 +162,7 @@ function mainMenuCreate() {
     }
     randomBackgroundSprites(assets.image`player`)
     randomBackgroundSprites(assets.image`car`)
-    randomBackgroundSprites(assets.image`explosionBig`)
+    randomBackgroundSprites(assets.image`carDefeated`)
 
 
     menu.onButtonPressed(controller.A, function (selection: string, selectedIndex: number) {
@@ -386,6 +387,7 @@ function settingsEnemiesMenuCreate() {
 //boss settings menu
 function settingsBossMenuCreate() {
     let settingsBoss = [
+        `All`,
         `Car`,
         `Ghost`
     ]
@@ -395,7 +397,9 @@ function settingsBossMenuCreate() {
     menuSelectionChangedSound(settingsBossMenu)
     
     settingsBossMenu.onButtonPressed(controller.A, function(selection: string, selectedIndex: number) {
-        if (selection == `Car`) {
+        if (selection == `All`) {
+            settingsGeneralBossesMenuCreate()
+        } else if (selection == `Car`) {
             settingsCarMenuCreate()
         } else if (selection == `Ghost`) {
             settingsGhostMenuCreate()
@@ -405,16 +409,39 @@ function settingsBossMenuCreate() {
     })
 }
 
+//General Bosses settings menu
+function settingsGeneralBossesMenuCreate() {
+    let settingsGeneralBosses = [
+        `Boss Spawns Every: ${bossSpawnNum}`,
+        `Boss Dodge: ${bossDodge}%`
+    ]
+
+    let settingsGeneralBossesMenu = miniMenu.createMenuFromArray(convertArrayToMenuItems(settingsGeneralBosses))
+    returnToCategoriesB(settingsGeneralBossesMenu)
+    menuSelectionChangedSound(settingsGeneralBossesMenu)
+
+    settingsGeneralBossesMenu.onButtonPressed(controller.A, function (selection: string, selectedIndex: number) {
+        if (selectedIndex == 0) {
+            bossSpawnNum = game.askForNumber("Spawn num", 3)
+            settings.writeNumber("bossSpawnNum", bossSpawnNum)
+        } else if (selectedIndex == 1) {
+            bossDodge = game.askForNumber("Boss Dodge", 2)
+            settings.writeNumber("bossDodge", bossDodge)
+        }
+
+        sprites.destroy(settingsGeneralBossesMenu)
+        settingsGeneralBossesMenuCreate()
+    })
+}
+
 //Car settings menu
 function settingsCarMenuCreate() {
     let settingsCar = [
-        `Spawn Boss Every: ${bossSpawnNum}`,
         `Car Health: ${carHealth}`,
         `Car Speed: ${carSpeed}`,
         `Car Fire Rate: ${carAttackInterval}ms`,
         `Car Bullet Speed: ${carProjectileSpeed}`,
         `Car Stun: ${carStunDuration}ms`,
-        `Car Dodge: ${carDodge}%`,
     ]
 
     let settingsCarMenu = miniMenu.createMenuFromArray(convertArrayToMenuItems(settingsCar))
@@ -423,26 +450,20 @@ function settingsCarMenuCreate() {
 
     settingsCarMenu.onButtonPressed(controller.A, function (selection: string, selectedIndex: number) {
         if (selectedIndex == 0) {
-            bossSpawnNum = game.askForNumber("Spawn num", 3)
-            settings.writeNumber("bossSpawnNum", bossSpawnNum)
-        } else if (selectedIndex == 1) {
             carHealth = game.askForNumber("Health", 3)
             settings.writeNumber("carHealth", carHealth)
-        } else if (selectedIndex == 2) {
+        } else if (selectedIndex == 1) {
             carSpeed = game.askForNumber("Speed", 3)
             settings.writeNumber("carSpeed", carSpeed)
-        } else if (selectedIndex == 3) {
+        } else if (selectedIndex == 2) {
             carAttackInterval = game.askForNumber("Car Fire Rate", 4)
             settings.writeNumber("carAttackInterval", carAttackInterval)
-        } else if (selectedIndex == 4) {
+        } else if (selectedIndex == 3) {
             carProjectileSpeed = game.askForNumber("Bullet Speed", 3)
             settings.writeNumber("carProjectileSpeed", carProjectileSpeed)
-        } else if (selectedIndex == 5) {
+        } else if (selectedIndex == 4) {
             carStunDuration = game.askForNumber("Stun Duration", 4)
             settings.writeNumber("carStunDuration", carStunDuration)
-        } else if (selectedIndex == 6) {
-            carDodge = game.askForNumber("Dodge", 2)
-            settings.writeNumber("carDodge", carDodge)
         }
 
         sprites.destroy(settingsCarMenu)
@@ -453,10 +474,10 @@ function settingsCarMenuCreate() {
 //Ghost settings menu
 function settingsGhostMenuCreate() {
     let settingsGhost = [
-        `Spawn Boss Every: ${bossSpawnNum}`,
         `Ghost Health: ${ghostHealth}`,
         `Ghost Speed: ${ghostSpeed}`,
-        `Ghost Fire Rate: ${ghostAttackInterval}ms`,
+        `Ghost attack interval: ${ghostAttackInterval}ms`,
+        `Ghost attack2 interval: ${ghostAttack2Interval}ms`
     ]
 
     let settingsGhostMenu = miniMenu.createMenuFromArray(convertArrayToMenuItems(settingsGhost))
@@ -465,17 +486,17 @@ function settingsGhostMenuCreate() {
 
     settingsGhostMenu.onButtonPressed(controller.A, function (selection: string, selectedIndex: number) {
         if (selectedIndex == 0) {
-            bossSpawnNum = game.askForNumber("Spawn num", 3)
-            settings.writeNumber("bossSpawnNum", bossSpawnNum)
-        } else if (selectedIndex == 1) {
             ghostHealth = game.askForNumber("Health", 3)
             settings.writeNumber("ghostHealth", ghostHealth)
-        } else if (selectedIndex == 2) {
+        } else if (selectedIndex == 1) {
             ghostSpeed = game.askForNumber("Speed", 3)
             settings.writeNumber("ghostSpeed", ghostSpeed)
-        } else if (selectedIndex == 3) {
+        } else if (selectedIndex == 2) {
             ghostAttackInterval = game.askForNumber("Ghost Fire Rate", 4)
             settings.writeNumber("ghostAttackInterval", ghostAttackInterval)
+        } else if (selectedIndex == 3) {
+            ghostAttack2Interval = game.askForNumber("Ghost Attack2 Rate", 4)
+            settings.writeNumber("ghostAttack2Interval", ghostAttack2Interval)
         }
 
         sprites.destroy(settingsGhostMenu)
@@ -722,11 +743,11 @@ function startGame() {
 
     //enemy1 subclass
     class enemy1 extends enemy {
-        constructor(x?: number, y?: number, dodge?: boolean) {
+        constructor(x?: number, y?: number, count?: boolean) {
             super(assets.image`enemy1`, enemy1Speed)
             animation.runImageAnimation(this.sprite, assets.animation`enemy1Animation`, 100, true)
             this.sprite.setKind(SpriteKind.Enemy)
-            if (dodge != true){
+            if (count != true){
                 enemy1Count++
                 if (enemy1CountBar) {
                     enemy1CountBar.value = enemy1Count % bossSpawnNum
@@ -899,7 +920,7 @@ function startGame() {
             //destroy the car if health is less than 0
             if (this.health <= 0) {
                 this.destroy()
-            } else if (Math.percentChance(carDodge) && this.sprite.x >= 0) {
+            } else if (Math.percentChance(bossDodge) && this.sprite.x >= 0) {
                 //car dodge mechanic(same as enemy1 dodge but moves 20 pixels))
                 if (this.sprite.y <= minY + 20) {
                     this.sprite.setPosition(this.sprite.x, this.sprite.y + 20)
@@ -936,13 +957,16 @@ function startGame() {
         attack1(): enemy[] {
             return []
         }
+        attack2(): void {
+            return
+        }
     }
 
     //boss spawn
     forever(function () {
         //spawns boss if enemy1 count divided by x has no remainder, enemy1 count is not zero, and no other car has already been spawned
         if (enemy1Count % bossSpawnNum == 0 && enemy1Count != 0 && bossSpawned == false && bossSpawn == true) {
-            if (Math.percentChance(50)) {
+            if (Math.percentChance(0)) {
                 let b = new car()
                 bosses.push(b)
             } else {
@@ -1000,8 +1024,8 @@ function startGame() {
                 info.player1.changeLifeBy(-100)
             } else {
                 //effect
-                let explosionBig = sprites.create(assets.image`explosionBig`, SpriteKind.Effect)
-                animation.runImageAnimation(explosionBig, assets.animation`explosionBigAnimation`, 200, false)
+                let explosionBig = sprites.create(assets.image`carDefeated`, SpriteKind.Effect)
+                animation.runImageAnimation(explosionBig, assets.animation`carDefeatedAnimation`, 200, false)
                 explosionBig.setPosition(this.sprite.x, this.sprite.y)
                 explosionBig.z = 4
                 explosionBig.lifespan = 1800
@@ -1055,7 +1079,6 @@ function startGame() {
         //if playerStunned is set to true
         if (playerStunned == true) {
             controller.moveSprite(player, 0, 0)
-            info.startCountdown(carStunDuration / 1000)
             player.sayText("Stunned", carStunDuration)
             pause(carStunDuration)
             controller.moveSprite(player, 0, playerSpeed)
@@ -1090,17 +1113,26 @@ function startGame() {
             if (this.sprite.x <= 0) {
                 info.player1.changeLifeBy(-100)
             } else {
+                //effect
+                let ghostDefeated = sprites.create(assets.image`ghostDefeated`, SpriteKind.Effect)
+                animation.runImageAnimation(ghostDefeated, assets.animation`ghostDefeatedAnimation`, 200, false)
+                ghostDefeated.setPosition(this.sprite.x, this.sprite.y)
+                ghostDefeated.z = 4
+                ghostDefeated.lifespan = 1800
+                ghostDefeated.changeScale(1,ScaleAnchor.Middle)
                 this.sprite = null
+                //plays sound 500 times for dramatic explosion
+                for (let i = 0; i < 450; i++) {
+                    music.play(music.melodyPlayable(music.spooky), music.PlaybackMode.UntilDone)
+                }
             }
         }
 
         attack1(): enemy[] {
             let spawned: enemy[] = []
-            let x = [-20,0,20]
-            let y = [0,-20,20]
-            for (let i = 0; i < 3; i++) {
-                let ex = this.sprite.x + x[i]
-                let ey = this.sprite.y + y[i]
+            for (let i = 0; i < 2; i++) {
+                let ex = this.sprite.x + randint(-30, 30)
+                let ey = this.sprite.y + randint(-30, 30)
                 if (ey < minY) {
                     ey = minY
                 } else if (ey > screen.height - 10) {
@@ -1110,6 +1142,15 @@ function startGame() {
                 spawned.push(e)
             }
             return spawned
+        }
+        attack2() {
+            if (this.sprite.flags & sprites.Flag.Invisible) {
+                this.sprite.setFlag(SpriteFlag.Invisible, false)
+                this.healthBar.setFlag(SpriteFlag.Invisible, false)
+            } else {
+                this.sprite.setFlag(SpriteFlag.Invisible, true)
+                this.healthBar.setFlag(SpriteFlag.Invisible, true)
+            }
         }
     }
 
@@ -1124,6 +1165,14 @@ function startGame() {
             }
         }
     })
+    game.onUpdateInterval(ghostAttack2Interval, function () {
+        for (let b of bosses) {
+            if (b.type == BossType.ghost) {
+                b.attack2()
+            }
+        }
+    })
+
 
     
     //game end
