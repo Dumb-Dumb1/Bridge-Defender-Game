@@ -49,7 +49,7 @@ let carAttackInterval = settings.readNumber("carAttackInterval") || 500         
 let carProjectileSpeed = settings.readNumber("carProjectileSpeed") || 100
 let carStunDuration = settings.readNumber("carStunDuration") || 1300
 
-let ghostHealth = settings.readNumber("ghostHealth") || 80
+let ghostHealth = settings.readNumber("ghostHealth") || 60
 let ghostSpeed = settings.readNumber("ghostSpeed") || -30
 let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 1250
 let ghostAttack2Interval = settings.readNumber("ghostAttack2Interval") || 3000
@@ -504,7 +504,6 @@ function settingsGhostMenuCreate() {
     })
 }
 
-
 //end of menus
 
 
@@ -619,7 +618,7 @@ function startGame() {
     //main attack
     //laser shoot
     forever(function () {
-        if (controller.A.isPressed() && game.runtime() >= laserCooldownTimer && controller.up.isPressed() == false && controller.down.isPressed() == false) {
+        if (controller.A.isPressed() && game.runtime() >= laserCooldownTimer && info.countdown() == 0 && controller.up.isPressed() == false && controller.down.isPressed() == false) {
             let laser = sprites.createProjectileFromSprite(assets.image`laser`, player, laserSpeed, 0)
             laser.x += 8
             laser.y += 4
@@ -1027,6 +1026,8 @@ function startGame() {
         constructor() {
             super(assets.image`car`, carSpeed, carHealth, BossType.car)
             animation.runImageAnimation(this.sprite, assets.animation`carAnimation`, 100, true)
+            //prevent game end when countdown ends 
+            info.onCountdownEnd(function() {})
         }
 
         onDestroyed() {
@@ -1051,7 +1052,6 @@ function startGame() {
         attack1(): enemy[] {
             //if car sprite exsists and player is not already stunned create target sprite at current player position and shoots enemy projectile at target
             if (this.sprite != null && playerStunned == false) {
-
                 let target = sprites.create(assets.image`target`, SpriteKind.Target)
                 target.lifespan = 2000
                 target.setPosition(player.x, player.y)
@@ -1091,6 +1091,7 @@ function startGame() {
         if (playerStunned == true) {
             controller.moveSprite(player, 0, 0)
             player.sayText("Stunned", carStunDuration)
+            info.startCountdown(carStunDuration/1000)
             pause(carStunDuration)
             controller.moveSprite(player, 0, playerSpeed)
             if (xMovement == true) {
@@ -1133,9 +1134,9 @@ function startGame() {
                 ghostDefeated.changeScale(1,ScaleAnchor.Middle)
                 this.sprite = null
                 //plays sound 500 times for dramatic explosion
-                for (let i = 0; i < 450; i++) {
-                    music.play(music.melodyPlayable(music.spooky), music.PlaybackMode.UntilDone)
-                }
+                
+                music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
+                
             }
         }
 
