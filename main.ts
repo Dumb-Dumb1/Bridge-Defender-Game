@@ -93,7 +93,7 @@ function instructions() {
         "Enemies:\n" +
         "- Green Snake: -1 health, " + enemy1Dodge + "% chance to dodge lasers\n" +
         "- Blue Snake: -4 to -9 health, immune to Mega Attacks.\n" +
-        "  " + enemy2Split + "% chance to split into 4-9 Green Snakes", 
+        "  " + enemy2Split + "% chance to split into 4-9 Green Snakes",
         DialogLayout.Full
     )
     game.showLongText(
@@ -145,7 +145,7 @@ function mainMenuCreate() {
     let title = sprites.create(assets.image`title`)
     title.setScale(1.5)
     title.setPosition(screen.width/2,(screen.height/2)-40)
-    
+
     //Random Sprites in background function
     function randomBackgroundSprites(image: Image) {
         for (let i = 0; i < randint(5,10); i++) {
@@ -276,7 +276,7 @@ function settingsGeneralMenuCreate() {
     let settingsGeneralMenu = miniMenu.createMenuFromArray(convertArrayToMenuItems(settingsGeneral))
     returnToCategoriesB(settingsGeneralMenu)
     menuSelectionChangedSound(settingsGeneralMenu)
-    
+
     settingsGeneralMenu.onButtonPressed(controller.A, function(selection: string, selectedIndex: number) {
 
         if (selectedIndex == 0) {
@@ -395,7 +395,7 @@ function settingsBossMenuCreate() {
     let settingsBossMenu = miniMenu.createMenuFromArray(convertArrayToMenuItems(settingsBoss))
     returnToCategoriesB(settingsBossMenu)
     menuSelectionChangedSound(settingsBossMenu)
-    
+
     settingsBossMenu.onButtonPressed(controller.A, function(selection: string, selectedIndex: number) {
         if (selection == `All`) {
             settingsGeneralBossesMenuCreate()
@@ -1017,7 +1017,7 @@ function startGame() {
         constructor() {
             super(assets.image`car`, carSpeed, carHealth, BossType.car)
             animation.runImageAnimation(this.sprite, assets.animation`carAnimation`, 100, true)
-            //prevent game end when countdown ends 
+            //prevent game end when countdown ends
             info.onCountdownEnd(function() {})
         }
 
@@ -1124,7 +1124,7 @@ function startGame() {
                 ghostDefeated.lifespan = 1000
                 ghostDefeated.changeScale(1,ScaleAnchor.Middle)
                 this.sprite = null
-                music.play(music.melodyPlayable(music.buzzer), music.PlaybackMode.UntilDone)               
+                music.play(music.melodyPlayable(music.buzzer), music.PlaybackMode.UntilDone)
             }
         }
 
@@ -1175,7 +1175,7 @@ function startGame() {
     })
 
 
-    
+
     //game end
     info.onLifeZero(function () {
         music.stopAllSounds()
