@@ -51,8 +51,8 @@ let carStunDuration = settings.readNumber("carStunDuration") || 1300
 
 let ghostHealth = settings.readNumber("ghostHealth") || 70
 let ghostSpeed = settings.readNumber("ghostSpeed") || -30
-let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 1250
-let ghostAttack2Interval = settings.readNumber("ghostAttack2Interval") || 3000
+let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 1000
+let ghostAttack2Interval = settings.readNumber("ghostAttack2Interval") || 1500
 
 
 //variables(Don't change)
@@ -1118,22 +1118,19 @@ function startGame() {
             } else {
                 //effect
                 let ghostDefeated = sprites.create(assets.image`ghostDefeated`, SpriteKind.Effect)
-                animation.runImageAnimation(ghostDefeated, assets.animation`ghostDefeatedAnimation`, 200, false)
+                animation.runImageAnimation(ghostDefeated, assets.animation`ghostDefeatedAnimation`, 100, false)
                 ghostDefeated.setPosition(this.sprite.x, this.sprite.y)
                 ghostDefeated.z = 4
-                ghostDefeated.lifespan = 1800
+                ghostDefeated.lifespan = 1000
                 ghostDefeated.changeScale(1,ScaleAnchor.Middle)
                 this.sprite = null
-                //plays sound 500 times for dramatic explosion
-                for (let i = 0; i < 450; i++) {
-                    music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
-                }                
+                music.play(music.melodyPlayable(music.buzzer), music.PlaybackMode.UntilDone)               
             }
         }
 
         attack1(): enemy[] {
             let spawned: enemy[] = []
-            for (let i = 0; i < 2; i++) {
+            for (let i = 0; i < 4; i++) {
                 let ex = this.sprite.x + randint(-30, 30)
                 let ey = this.sprite.y + randint(-30, 30)
                 if (ey < minY) {
