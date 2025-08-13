@@ -540,12 +540,14 @@ function startGame() {
 
     //timer
     let time = 0
-    let timerText = textsprite.create(`${time}`,0,15)
-    timerText.setPosition(80,5)
+    let timerText = textsprite.create("0:00", 0, 15)
+    timerText.setPosition(80, 5)
     timerText.z = 6
     game.onUpdateInterval(1000, function () {
         time++
-        timerText.setText(`${time}`)
+        let mins = Math.idiv(time, 60)
+        let secs = time % 60
+        timerText.setText(`${mins}:${secs < 10 ? "0" : ""}${secs}`)
     })
 
     //enemy1 count bar
