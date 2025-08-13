@@ -1056,7 +1056,7 @@ function startGame() {
         }
     }
 
-    //car attacks
+    //car attack
     game.onUpdateInterval(carAttackInterval, function () {
         for (let b of bosses) {
             if (b.type == BossType.car) {
@@ -1155,7 +1155,7 @@ function startGame() {
         }
     }
 
-    //ghost attacks
+    //ghost attack
     game.onUpdateInterval(ghostAttackInterval, function () {
         for (let b of bosses) {
             if (b.type == BossType.ghost) {
