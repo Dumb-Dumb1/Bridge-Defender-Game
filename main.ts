@@ -66,7 +66,8 @@ let unlimitedMegaAttack = false
 let xMovement = false
 let megaAttackCooldown = 0
 let enemy1Count = 0
-let bossSpawned = false
+// Track the enemy count at which the next boss should spawn
+let nextBossSpawn = bossSpawnNum
 let playerStunned = false
 let laserCooldownTimer = 0
 
@@ -538,6 +539,10 @@ function startGame() {
     //start music
     music.play(music.createSong(assets.song`mySong`), music.PlaybackMode.LoopingInBackground)
 
+    // Reset boss spawn counters at the start of each game
+    enemy1Count = 0
+    nextBossSpawn = bossSpawnNum
+
     //timer
     let time = 0
     let timerText = textsprite.create(`${time}`,0,15)
@@ -974,8 +979,9 @@ function startGame() {
 
     //boss spawn
     forever(function () {
-        //spawns boss if enemy1 count divided by x has no remainder, enemy1 count is not zero, and no other car has already been spawned
-        if (enemy1Count % bossSpawnNum == 0 && enemy1Count != 0 && bossSpawned == false && bossSpawn == true) {
+        // Spawn a boss each time the enemy count crosses the next threshold.
+        // This avoids missing a spawn if multiple enemies are created in the same frame.
+        if (enemy1Count >= nextBossSpawn && bossSpawn == true) {
             if (Math.percentChance(50)) {
                 let b = new car()
                 bosses.push(b)
@@ -983,12 +989,8 @@ function startGame() {
                 let b = new ghost()
                 bosses.push(b)
             }
-            //bossSpawned makes sure only one boss spawns every x enemy1
-            bossSpawned = true
-        }
-        //if enemy1 count has a remainder, reset bossSpawned
-        if (enemy1Count % bossSpawnNum != 0 && bossSpawn == true) {
-            bossSpawned = false
+            // Prepare for the next boss spawn
+            nextBossSpawn += bossSpawnNum
         }
     })
 
