@@ -14,7 +14,7 @@ let enemy1CountBar: StatusBarSprite = null
 let carHealthBar: StatusBarSprite = null
 let megaAttackCooldownBar: StatusBarSprite = null
 
-//make these sprites accssible from anywhere in the code
+//make these sprites accessible from anywhere in the code
 let player: Sprite = null
 let car: Sprite = null
 
@@ -80,47 +80,50 @@ mainMenuCreate()
 //instructions function
 function instructions() {
     game.splash("Read all the text carefully before playing the game")
-    game.splash("This game was made to be played on a computer with a keyboard, playing on a touch screen is not recomened and will make the game extremly difficult")
+    game.splash("This game is best played on a computer with a keyboard. Touch screens are not recommended and will make the game extremely difficult.")
     game.showLongText(
         "Controls:\n" +
         "- Move: Up and Down\n" +
         "- Hold A: Fire laser (only when not moving)\n" +
-        "- Press B: Mega Attack: Fires 5 projectiles in 3 bursts\n" +
+        "- Press B: Mega Attack fires 5 projectiles in 3 bursts\n" +
         "  (Pushes enemies back, " + megaAttackCooldownS + "s cooldown)",
         DialogLayout.Full
     )
     game.showLongText(
         "Enemies:\n" +
         "- Green Snake: -1 health, " + enemy1Dodge + "% chance to dodge lasers\n" +
-        "- Blue Snake: -4 to -9 health, immune to Mega Attacks.\n" +
+        "- Blue Snake: -4 to -9 health, immune to Mega Attacks\n" +
         "  " + enemy2Split + "% chance to split into 4-9 Green Snakes",
         DialogLayout.Full
     )
     game.showLongText(
-        "- Car (Boss): -100 health, spawns every " + bossSpawnNum + " Green Snakes\n" +
+        "Bosses:\n" +
+        "- Car: -100 health, spawns every " + bossSpawnNum + " Green Snakes\n" +
         "  Shoots stun projectiles. When stunned, you can't move\n" +
-        "  or shoot lasers, but you can still use Mega Attack\n" +
-        "  Dodges lasers " + bossDodge + "% of the time",
+        "  or shoot lasers but can still use Mega Attack\n" +
+        "  Dodges lasers " + bossDodge + "% of the time\n" +
+        "- Ghost: -" + ghostHealth + " health, summons Green Snakes\n" +
+        "  Randomly turns invisible and reappears elsewhere",
         DialogLayout.Full
     )
     game.showLongText(
         "Bars:\n" +
         "- Top bar: Green Snakes defeated (spawns boss)\n" +
         "- Cooldown bar: Mega Attack recharge\n" +
-        "- Boss health bar: Car's remaining health",
+        "- Boss health bar: Current boss's remaining health",
         DialogLayout.Full
     )
     game.showLongText(
         "Goal:\n" +
         "Defend the bridge!\n" +
-        "Don't let any enemies get through.\n" +
+        "Don't let any enemies get through\n" +
         "Survive as long as possible!",
         DialogLayout.Full
     )
 }
 
 //menus
-//covert to menu function
+//convert array to menu items
 function convertArrayToMenuItems(items: string[]) {
     let menuItems: miniMenu.MenuItem[] = []
     for (let i = 0; i < items.length; i++) {
