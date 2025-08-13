@@ -142,9 +142,9 @@ function mainMenuCreate() {
     })
     music.setVolume(170)
 
-    let title = textsprite.create(" Bridge Defender ", 15, 1)
+    let title = sprites.create(assets.image`title`)
     title.setScale(1.5)
-    title.setPosition(screen.width/2,(screen.height/2)-50)
+    title.setPosition(screen.width/2,(screen.height/2)-40)
     
     //Random Sprites in background function
     function randomBackgroundSprites(image: Image) {
