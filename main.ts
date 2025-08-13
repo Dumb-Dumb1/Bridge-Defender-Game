@@ -541,7 +541,7 @@ function startGame() {
     //timer
     let time = 0
     let timerText = textsprite.create(`${time}`,0,15)
-    timerText.setPosition(140,7)
+    timerText.setPosition(80,5)
     timerText.z = 6
     game.onUpdateInterval(1000, function () {
         time++
@@ -549,11 +549,10 @@ function startGame() {
     })
 
     //enemy1 count bar
-    enemy1CountBar = statusbars.create(100, 5, StatusBarKind.Magic)
-    enemy1CountBar.setPosition(50, 50)
+    enemy1CountBar = statusbars.create(90, 2, StatusBarKind.Magic)
     enemy1CountBar.z = 5
     enemy1CountBar.max = bossSpawnNum
-    enemy1CountBar.setPosition(86, 8)
+    enemy1CountBar.setPosition(86, 11)
 
     // DEBUG/CHEATS
     controller.combos.setTimeout(500)
@@ -599,6 +598,7 @@ function startGame() {
 
 
     //player set up
+    info.setLifeImage(assets.image`life`)
     info.setLife(playerHealthS)
     player = sprites.create(assets.image`player`, SpriteKind.Player)
     player.setPosition(0, 60)

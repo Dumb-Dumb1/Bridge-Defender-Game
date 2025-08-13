@@ -79,6 +79,11 @@
         "mimeType": "image/x-mkcd-f4",
         "displayName": "title"
     },
+    "image17": {
+        "data": "hwQKAAkAAAAAuwAAAAAAAABby8wMAAAAAFu9VQwAAACwVVXdDAAAAFtVVc0AAAAAWxFVzQAAAACwEVXdDAAAAABbvVUMAAAAAFvLzAwAAAAAuwAAAAAAAA==",
+        "mimeType": "image/x-mkcd-f4",
+        "displayName": "life"
+    },
     "anim1": {
         "namespace": "myAnimations",
         "id": "anim1",
