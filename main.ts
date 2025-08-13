@@ -43,13 +43,13 @@ let enemy2Split = settings.readNumber("enemy2Split") || 50                      
 let bossSpawnNum = settings.readNumber("bossSpawnNum") || 100
 let bossDodge = settings.readNumber("bossDodge") || 90                                           //percent
 
-let carHealth = settings.readNumber("carHealth") || 150
+let carHealth = settings.readNumber("carHealth") || 165
 let carSpeed = settings.readNumber("carSpeed") || -20
 let carAttackInterval = settings.readNumber("carAttackInterval") || 500                //will break if set too low
 let carProjectileSpeed = settings.readNumber("carProjectileSpeed") || 100
 let carStunDuration = settings.readNumber("carStunDuration") || 1300
 
-let ghostHealth = settings.readNumber("ghostHealth") || 60
+let ghostHealth = settings.readNumber("ghostHealth") || 70
 let ghostSpeed = settings.readNumber("ghostSpeed") || -30
 let ghostAttackInterval = settings.readNumber("ghostAttackInterval") || 1250
 let ghostAttack2Interval = settings.readNumber("ghostAttack2Interval") || 3000
@@ -66,7 +66,7 @@ let unlimitedMegaAttack = false
 let xMovement = false
 let megaAttackCooldown = 0
 let enemy1Count = 0
-let bossSpawned = false
+let nextBossSpawn = bossSpawnNum
 let playerStunned = false
 let laserCooldownTimer = 0
 
@@ -604,9 +604,6 @@ function startGame() {
     player.setPosition(0, 60)
     controller.moveSprite(player, 0, playerSpeed)
     player.setStayInScreen(true)
-    if (megaAttackCooldownBar) {
-        megaAttackCooldownBar.attachToSprite(player)
-    }
 
     //boundary to prevent player from going to resricted areas
     forever(function () {
@@ -664,14 +661,12 @@ function startGame() {
     //mega attack
     //mega attack cooldown countdown
     game.onUpdateInterval(50, function () {
-        if (megaAttackCooldownBar) {
-            if (megaAttackCooldown > 0) {
+            if (megaAttackCooldown > 0 && megaAttackCooldownBar) {
                 megaAttackCooldown -= 0.05
                 megaAttackCooldownBar.value = megaAttackCooldown
-            } else if (megaAttackCooldown <= 0) {
+            } else if (megaAttackCooldown <= 0 && megaAttackCooldownBar) {
                 sprites.destroy(megaAttackCooldownBar)
             }
-        }
     })
 
     //mega attack projectile function
@@ -711,6 +706,7 @@ function startGame() {
             player.setImage(assets.image`player`)
         }
     })
+
 
 
     //enemies
@@ -975,7 +971,7 @@ function startGame() {
     //boss spawn
     forever(function () {
         //spawns boss if enemy1 count divided by x has no remainder, enemy1 count is not zero, and no other car has already been spawned
-        if (enemy1Count % bossSpawnNum == 0 && enemy1Count != 0 && bossSpawned == false && bossSpawn == true) {
+        if (nextBossSpawn <= enemy1Count && bossSpawn == true) {
             if (Math.percentChance(50)) {
                 let b = new car()
                 bosses.push(b)
@@ -983,12 +979,7 @@ function startGame() {
                 let b = new ghost()
                 bosses.push(b)
             }
-            //bossSpawned makes sure only one boss spawns every x enemy1
-            bossSpawned = true
-        }
-        //if enemy1 count has a remainder, reset bossSpawned
-        if (enemy1Count % bossSpawnNum != 0 && bossSpawn == true) {
-            bossSpawned = false
+            nextBossSpawn += bossSpawnNum
         }
     })
 
@@ -1134,9 +1125,9 @@ function startGame() {
                 ghostDefeated.changeScale(1,ScaleAnchor.Middle)
                 this.sprite = null
                 //plays sound 500 times for dramatic explosion
-                
-                music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
-                
+                for (let i = 0; i < 450; i++) {
+                    music.play(music.melodyPlayable(music.powerUp), music.PlaybackMode.UntilDone)
+                }                
             }
         }
 
