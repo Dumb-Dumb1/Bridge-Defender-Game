@@ -548,9 +548,13 @@ function startGame() {
     timerText.z = 6
     game.onUpdateInterval(1000, function () {
         time++
-        let mins = Math.idiv(time, 60)
-        let secs = time % 60
-        timerText.setText(`${mins}:${secs < 10 ? "0" : ""}${secs}`)
+        let mins = Math.floor(time / 60)
+        let secs: any
+        secs = time % 60
+        if (secs < 10) {
+            secs = `0${secs}`
+        }
+        timerText.setText(`${mins}:${secs}`)
     })
 
     //enemy1 count bar
