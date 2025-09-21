@@ -78,6 +78,7 @@ scene.setBackgroundImage(assets.image`backgroundEXTENDED`)
 mainMenuCreate()
 
 //instructions function
+/**shows instructions*/
 function instructions() {
     game.splash("Read all the text carefully before playing the game")
     game.splash("This game is best played on a computer with a keyboard. Touch screens are not recommended and will make the game extremely difficult.")
@@ -123,7 +124,7 @@ function instructions() {
 }
 
 //menus
-//convert array to menu items
+/**converts array to menu items*/
 function convertArrayToMenuItems(items: string[]) {
     let menuItems: miniMenu.MenuItem[] = []
     for (let i = 0; i < items.length; i++) {
@@ -133,6 +134,7 @@ function convertArrayToMenuItems(items: string[]) {
 }
 
 //main menu function
+/**shows main menu*/
 function mainMenuCreate() {
     let mainMenuItems = ["Start", "Instructions", "Settings"]
     let menu = miniMenu.createMenuFromArray(convertArrayToMenuItems(mainMenuItems))
@@ -149,7 +151,7 @@ function mainMenuCreate() {
     title.setScale(1.5)
     title.setPosition(screen.width/2,(screen.height/2)-40)
 
-    //Random Sprites in background function
+    /**Creates random sprites for background*/
     function randomBackgroundSprites(image: Image) {
         for (let i = 0; i < randint(5,10); i++) {
             let menuBackgroundSprite = sprites.create(image, SpriteKind.MenuBackgroundSprite)
@@ -563,7 +565,7 @@ function startGame() {
     enemy1CountBar.max = bossSpawnNum
     enemy1CountBar.setPosition(86, 11)
 
-    // DEBUG/CHEATS
+    //DEBUG/CHEATS
     controller.combos.setTimeout(500)
     controller.combos.attachCombo("URDLUA+B", function () {
         //debugUsed = true
